@@ -4,7 +4,7 @@ public sealed record ReleaseYear
 {
     public int Value { get; }
 
-    public ReleaseYear(int value)
+    private ReleaseYear(int value)
     {
         Value = value;
     }

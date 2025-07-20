@@ -4,7 +4,12 @@ public sealed record GameTitle
 {
     public string Value { get; }
 
-    public GameTitle(string value)
+    private GameTitle(string value)
+    {
+        Value = value;
+    }
+
+    public static GameTitle Create(string value)
     {
         if (string.IsNullOrWhiteSpace(value))
             throw new ArgumentException("Game title cannot be empty!");
@@ -12,7 +17,7 @@ public sealed record GameTitle
         if (value.Length > 100)
             throw new ArgumentException("Game title is too long!");
 
-        Value = value;
+        return new GameTitle(value);
     }
 
     public override string ToString() => Value;
