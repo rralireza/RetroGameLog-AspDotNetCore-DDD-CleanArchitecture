@@ -1,10 +1,11 @@
 ﻿using RetroGameLog.Domain.Abstractions;
+using RetroGameLog.Domain.Reviews.Events;
 
 namespace RetroGameLog.Domain.Reviews;
 
 public sealed class Review : Entity
 {
-    public Review(Guid id, Guid gameId, Reviewer reviewer, ReviewContent reviewContent, Rating rating, DateTime createdAt) : base(id)
+    private Review(Guid id, Guid gameId, Reviewer reviewer, ReviewContent reviewContent, Rating rating, DateTime createdAt) : base(id)
     {
         GameId = gameId;
         Reviewer = reviewer;
@@ -22,4 +23,22 @@ public sealed class Review : Entity
     public Rating Rating { get; private set; }
 
     public DateTime CreatedAt { get; private set; }
+
+    /// <summary>
+    /// This factory method creates a new review instance.
+    /// </summary>
+    /// <param name="gameId"></param>
+    /// <param name="reviewer"></param>
+    /// <param name="reviewContent"></param>
+    /// <param name="rating"></param>
+    /// <param name="createdAt"></param>
+    /// <returns>a new review object!</returns>
+    public static Review CreateReview(Guid gameId, Reviewer reviewer, ReviewContent reviewContent, Rating rating, DateTime createdAt)
+    {
+        var review = new Review(Guid.NewGuid(), gameId, reviewer, reviewContent, rating, createdAt);
+
+        review.RaiseDomainEvent(new ReviewCreatedDomainEvent(review.Id));
+
+        return review;
+    }
 }
