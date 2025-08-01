@@ -8,9 +8,10 @@ internal sealed class CreateGameCommandHandler : ICommandHandler<CreateGameComma
 {
     private readonly IGameRepository _gameRepository;
     private readonly IUnitOfWork _unitOfWork;
-    public CreateGameCommandHandler(IGameRepository gameRepository)
+    public CreateGameCommandHandler(IGameRepository gameRepository, IUnitOfWork unitOfWork)
     {
         _gameRepository = gameRepository;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<Result<Guid>> Handle(CreateGameCommand request, CancellationToken cancellationToken)
