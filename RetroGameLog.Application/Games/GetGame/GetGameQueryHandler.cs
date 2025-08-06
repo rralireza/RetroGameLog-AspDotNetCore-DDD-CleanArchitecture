@@ -25,7 +25,7 @@ internal sealed class GetGameQueryHandler : IQueryHandler<GetGameQuery, GameResp
                                 platform AS Platform,
                                 releaseYear AS ReleaseYear,
                                 genre AS Genre,
-                                developer AS Developer,
+                                developer AS Developer
                               FROM games
                               WHERE id = @gameId
                               """;

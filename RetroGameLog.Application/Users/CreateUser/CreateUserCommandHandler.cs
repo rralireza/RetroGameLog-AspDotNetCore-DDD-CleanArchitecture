@@ -22,9 +22,6 @@ internal sealed class CreateUserCommandHandler : ICommandHandler<CreateUserComma
 
         var fullName = FullName.Create(request.firstName, request.lastName);
 
-        if (fullName is null)
-            return Result.Failure<Guid>(UserErrors.BlankFullName);
-
         var user = User.Create(fullName, request.email, request.username, request.registeredAt);
 
         _userRepository.Add(user);
