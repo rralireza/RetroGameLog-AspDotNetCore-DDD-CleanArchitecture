@@ -17,12 +17,12 @@ internal sealed class CreateUserCommandHandler : ICommandHandler<CreateUserComma
 
     public async Task<Result<Guid>> Handle(CreateUserCommand request, CancellationToken cancellationToken)
     {
-        if (string.IsNullOrWhiteSpace(request.firstName) || string.IsNullOrWhiteSpace(request.lastName))
+        if (string.IsNullOrWhiteSpace(request.FirstName) || string.IsNullOrWhiteSpace(request.LastName))
             return Result.Failure<Guid>(UserErrors.BlankFullName);
 
-        var fullName = FullName.Create(request.firstName, request.lastName);
+        var fullName = FullName.Create(request.FirstName, request.LastName);
 
-        var user = User.Create(fullName, request.email, request.username, request.registeredAt);
+        var user = User.Create(fullName, request.Email, request.Username, request.RegisteredAt);
 
         _userRepository.Add(user);
 
