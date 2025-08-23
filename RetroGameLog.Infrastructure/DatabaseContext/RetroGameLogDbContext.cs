@@ -8,4 +8,11 @@ public sealed class RetroGameLogDbContext : DbContext, IUnitOfWork
     public RetroGameLogDbContext(DbContextOptions options) : base(options)
     {
     }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(RetroGameLogDbContext).Assembly);
+
+        base.OnModelCreating(modelBuilder);
+    }
 }
