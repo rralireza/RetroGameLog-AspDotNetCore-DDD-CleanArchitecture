@@ -1,12 +1,16 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using MediatR;
+using Microsoft.EntityFrameworkCore;
 using RetroGameLog.Domain.Abstractions;
 
 namespace RetroGameLog.Infrastructure.DatabaseContext;
 
 public sealed class RetroGameLogDbContext : DbContext, IUnitOfWork
 {
-    public RetroGameLogDbContext(DbContextOptions options) : base(options)
+    private readonly IPublisher _publisher;
+
+    public RetroGameLogDbContext(DbContextOptions options, IPublisher publisher) : base(options)
     {
+        _publisher = publisher;
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -14,5 +18,34 @@ public sealed class RetroGameLogDbContext : DbContext, IUnitOfWork
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(RetroGameLogDbContext).Assembly);
 
         base.OnModelCreating(modelBuilder);
+    }
+
+    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        var result = await base.SaveChangesAsync(cancellationToken);
+
+        await PublishDomainEvenets();
+
+        return result;
+    }
+
+    public async Task PublishDomainEvenets()
+    {
+        var domainEvents = ChangeTracker
+            .Entries<Entity>()
+            .Select(x => x.Entity)
+            .SelectMany(x =>
+            {
+                var domainEvents = x.DomainEvents;
+
+                x.ClearDomainEvents();
+
+                return domainEvents;
+            }).ToList();
+
+        foreach (var domainEvent in domainEvents)
+        {
+            await _publisher.Publish(domainEvent);
+        }
     }
 }
