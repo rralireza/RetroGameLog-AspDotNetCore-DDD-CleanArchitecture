@@ -12,6 +12,7 @@ internal sealed class SqlConnectionFactory : ISqlConnectionFactory
     {
         _connectionString = connectionString;
     }
+
     public IDbConnection CreateConnection()
     {
         var connection = new SqlConnection(_connectionString);
