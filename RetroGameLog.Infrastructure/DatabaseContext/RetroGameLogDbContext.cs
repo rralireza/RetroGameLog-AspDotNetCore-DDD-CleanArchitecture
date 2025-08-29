@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
+using RetroGameLog.Application.Exceptions;
 using RetroGameLog.Domain.Abstractions;
 
 namespace RetroGameLog.Infrastructure.DatabaseContext;
@@ -22,11 +23,18 @@ public sealed class RetroGameLogDbContext : DbContext, IUnitOfWork
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
-        var result = await base.SaveChangesAsync(cancellationToken);
+        try
+        {
+            var result = await base.SaveChangesAsync(cancellationToken);
 
-        await PublishDomainEvenets();
+            await PublishDomainEvenets();
 
-        return result;
+            return result;
+        }
+        catch (DbUpdateConcurrencyException ex)
+        {
+            throw new ConcurrencyException("A Concurrency error occurred while saving changes to the database!", ex);
+        }
     }
 
     public async Task PublishDomainEvenets()
