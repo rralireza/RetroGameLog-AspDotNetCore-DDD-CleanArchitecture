@@ -1,4 +1,5 @@
 ﻿using RetroGameLog.Application.Abstractions.Messaging;
+using RetroGameLog.Application.Exceptions;
 using RetroGameLog.Domain.Abstractions;
 using RetroGameLog.Domain.Games;
 
@@ -19,12 +20,19 @@ internal sealed class CreateGameCommandHandler : ICommandHandler<CreateGameComma
         if (await _gameRepository.IsGameTitleExistsAsync(request.Title))
             return Result.Failure<Guid>(GameErrors.DuplicateTitle);
 
-        var game = Game.CreateGame(request.Title, request.Platform, request.ReleaseYear, request.Genre, request.Developer);
+        try
+        {
+            var game = Game.CreateGame(request.Title, request.Platform, request.ReleaseYear, request.Genre, request.Developer);
 
-        _gameRepository.Add(game);
+            _gameRepository.Add(game);
 
-        await _unitOfWork.SaveChangesAsync(cancellationToken);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return Result.Success(game.Id);
+            return Result.Success(game.Id);
+        }
+        catch (ConcurrencyException)
+        {
+            return Result.Failure<Guid>(GameErrors.DuplicateTitle);
+        }
     }
 }

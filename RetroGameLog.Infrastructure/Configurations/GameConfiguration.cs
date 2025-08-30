@@ -28,5 +28,7 @@ internal sealed class GameConfiguration : IEntityTypeConfiguration<Game>
         builder.Property(d => d.Developer)
             .HasMaxLength(50)
             .HasConversion(d => d.Value, value => Developer.Create(value));
+
+        builder.Property<uint>("RowVersion").IsRowVersion();
     }
 }
