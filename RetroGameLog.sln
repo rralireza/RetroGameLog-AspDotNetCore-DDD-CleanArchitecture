@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RetroGameLog.Application", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RetroGameLog.Infrastructure", "RetroGameLog.Infrastructure\RetroGameLog.Infrastructure.csproj", "{869185A5-FD19-44F5-8C0A-D8FF304BFB65}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RetroGameLog.API", "RetroGameLog.API\RetroGameLog.API.csproj", "{780F4E92-7B47-4D0B-999A-47FC154F6455}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +33,10 @@ Global
 		{869185A5-FD19-44F5-8C0A-D8FF304BFB65}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{869185A5-FD19-44F5-8C0A-D8FF304BFB65}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{869185A5-FD19-44F5-8C0A-D8FF304BFB65}.Release|Any CPU.Build.0 = Release|Any CPU
+		{780F4E92-7B47-4D0B-999A-47FC154F6455}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{780F4E92-7B47-4D0B-999A-47FC154F6455}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{780F4E92-7B47-4D0B-999A-47FC154F6455}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{780F4E92-7B47-4D0B-999A-47FC154F6455}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -39,6 +45,7 @@ Global
 		{BE460802-0D2B-4E81-91D5-F7158D86A307} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{358EE86E-E2C9-41EA-BB46-9BD0536A25E5} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{869185A5-FD19-44F5-8C0A-D8FF304BFB65} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{780F4E92-7B47-4D0B-999A-47FC154F6455} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DA79EFDD-C063-4737-B9D8-2F174087CB12}
