@@ -4,8 +4,8 @@ using RetroGameLog.Domain.Games;
 namespace RetroGameLog.Application.Games.CreateGame;
 
 public sealed record CreateGameCommand(
-    GameTitle Title,
-    Platform Platform,
-    ReleaseYear ReleaseYear,
-    Genre Genre,
-    Developer Developer) : ICommand<Guid>;
+    string Title,
+    string Platform,
+    int ReleaseYear,
+    string Genre,
+    string Developer) : ICommand<Guid>;

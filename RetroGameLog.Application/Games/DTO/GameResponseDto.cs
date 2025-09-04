@@ -1,4 +1,4 @@
-﻿namespace RetroGameLog.Application.Games.GetGame;
+﻿namespace RetroGameLog.Application.Games.DTO;
 
 public sealed class GameResponseDto
 {

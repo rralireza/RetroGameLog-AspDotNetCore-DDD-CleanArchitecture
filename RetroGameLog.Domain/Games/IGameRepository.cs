@@ -4,7 +4,7 @@ public interface IGameRepository
 {
     Task<Game?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
 
-    Task<bool> IsGameTitleExistsAsync(GameTitle title);
+    Task<bool> IsGameTitleExistsAsync(string title);
 
     void Add(Game game);
 }

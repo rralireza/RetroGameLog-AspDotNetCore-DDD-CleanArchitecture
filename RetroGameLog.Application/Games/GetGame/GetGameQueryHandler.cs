@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using RetroGameLog.Application.Abstractions.Data;
 using RetroGameLog.Application.Abstractions.Messaging;
+using RetroGameLog.Application.Games.DTO;
 using RetroGameLog.Domain.Abstractions;
 
 namespace RetroGameLog.Application.Games.GetGame;

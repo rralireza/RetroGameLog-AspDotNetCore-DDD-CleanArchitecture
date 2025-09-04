@@ -22,7 +22,13 @@ internal sealed class CreateGameCommandHandler : ICommandHandler<CreateGameComma
 
         try
         {
-            var game = Game.CreateGame(request.Title, request.Platform, request.ReleaseYear, request.Genre, request.Developer);
+            var game = Game.CreateGame(
+                GameTitle.Create(request.Title),
+                Platform.FindPlatform(request.Platform),
+                ReleaseYear.Create(request.ReleaseYear),
+                Genre.FindGenre(request.Genre),
+                Developer.Create(request.Developer)
+                );
 
             _gameRepository.Add(game);
 

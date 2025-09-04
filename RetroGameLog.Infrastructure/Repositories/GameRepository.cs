@@ -11,10 +11,10 @@ internal sealed class GameRepository : Repository<Game>, IGameRepository
 
     }
 
-    public async Task<bool> IsGameTitleExistsAsync(GameTitle title)
+    public async Task<bool> IsGameTitleExistsAsync(string title)
     {
         return await DbContext
             .Set<Game>()
-            .AnyAsync(game => game.Title == title);
+            .AnyAsync(game => game.Title.Value == title);
     }
 }
