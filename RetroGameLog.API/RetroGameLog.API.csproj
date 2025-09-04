@@ -13,4 +13,13 @@
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.22.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Controllers\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\RetroGameLog.Application\RetroGameLog.Application.csproj" />
+    <ProjectReference Include="..\RetroGameLog.Infrastructure\RetroGameLog.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>

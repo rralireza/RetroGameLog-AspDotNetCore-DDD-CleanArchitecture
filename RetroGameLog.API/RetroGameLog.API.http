@@ -1,6 +1,0 @@
-@RetroGameLog.API_HostAddress = http://localhost:5104
-
-GET {{RetroGameLog.API_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
