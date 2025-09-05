@@ -5,6 +5,7 @@ using RetroGameLog.Application.Abstractions.Data;
 using RetroGameLog.Application.Abstractions.Notification;
 using RetroGameLog.Domain.Abstractions;
 using RetroGameLog.Domain.Games;
+using RetroGameLog.Domain.Users;
 using RetroGameLog.Infrastructure.DatabaseConnection;
 using RetroGameLog.Infrastructure.DatabaseContext;
 using RetroGameLog.Infrastructure.Notification;
@@ -26,6 +27,8 @@ public static class DependencyInjection
         });
 
         services.AddScoped<IGameRepository, GameRepository>();
+
+        services.AddScoped<IUserRepository, UserRepository>();
 
         services.AddScoped<IUnitOfWork>(provider => provider.GetRequiredService<RetroGameLogDbContext>());
 

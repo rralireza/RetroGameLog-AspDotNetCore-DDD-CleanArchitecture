@@ -1,0 +1,21 @@
+services:
+  retrogamelog.api:
+    image: ${DOCKER_REGISTRY-}retrogamelogapi
+    container_name: RetroGameLogAPI
+    build:
+      context: .
+      dockerfile: RetroGameLog.API/Dockerfile
+
+  mssql:
+     image: mcr.microsoft.com/mssql/server:2022-latest
+     container_name: mssql
+     environment:
+        - ACCEPT_EULA=Y
+        - SA_PASSWORD=Admin@1234
+     ports:
+        - "1433:1433"
+     volumes:
+        - mssqldata:/var/opt/mssql
+
+volumes:
+  mssqldata:
