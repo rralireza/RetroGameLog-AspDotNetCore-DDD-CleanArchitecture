@@ -1,6 +1,7 @@
 ﻿using RetroGameLog.Domain.Abstractions;
 using RetroGameLog.Domain.Achivements.Events;
 using RetroGameLog.Domain.Reviews;
+using RetroGameLog.Domain.Users;
 
 namespace RetroGameLog.Domain.Achivements;
 

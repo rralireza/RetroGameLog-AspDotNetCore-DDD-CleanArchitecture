@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RetroGameLog.Infrastructure.DatabaseContext;
 
@@ -11,9 +12,11 @@ using RetroGameLog.Infrastructure.DatabaseContext;
 namespace RetroGameLog.Infrastructure.Migrations
 {
     [DbContext(typeof(RetroGameLogDbContext))]
-    partial class RetroGameLogDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250912070956_Add new tables to db")]
+    partial class Addnewtablestodb
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -49,7 +52,10 @@ namespace RetroGameLog.Infrastructure.Migrations
                     b.Property<DateTime>("UnlockedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid?>("UserId")
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("UserId1")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
@@ -57,6 +63,8 @@ namespace RetroGameLog.Infrastructure.Migrations
                     b.HasIndex("GameId");
 
                     b.HasIndex("UserId");
+
+                    b.HasIndex("UserId1");
 
                     b.ToTable("Achivements", (string)null);
                 });
@@ -128,7 +136,10 @@ namespace RetroGameLog.Infrastructure.Migrations
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("bigint");
 
-                    b.Property<Guid?>("UserId")
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("UserId1")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
@@ -136,6 +147,8 @@ namespace RetroGameLog.Infrastructure.Migrations
                     b.HasIndex("GameId");
 
                     b.HasIndex("UserId");
+
+                    b.HasIndex("UserId1");
 
                     b.ToTable("Reviews", (string)null);
                 });
@@ -180,9 +193,17 @@ namespace RetroGameLog.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("RetroGameLog.Domain.Users.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("RetroGameLog.Domain.Users.User", null)
                         .WithMany("Achivements")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId1");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("RetroGameLog.Domain.Reviews.Review", b =>
@@ -193,9 +214,17 @@ namespace RetroGameLog.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("RetroGameLog.Domain.Users.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("RetroGameLog.Domain.Users.User", null)
                         .WithMany("Reviews")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId1");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("RetroGameLog.Domain.Users.User", b =>

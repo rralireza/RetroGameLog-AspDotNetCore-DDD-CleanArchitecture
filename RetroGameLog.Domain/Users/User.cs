@@ -35,11 +35,13 @@ public sealed class User : Entity
 
     public void AddReview(Review review)
     {
+
         _reviews.Add(review);
     }
 
     public void AddAchivement(Achivement achivement)
     {
+
         _achivements.Add(achivement);
     }
 

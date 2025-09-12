@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using RetroGameLog.Domain.Achivements;
+using RetroGameLog.Domain.Games;
 
 namespace RetroGameLog.Infrastructure.Configurations;
 
@@ -24,6 +25,12 @@ internal sealed class AchivementConfiguration : IEntityTypeConfiguration<Achivem
             .HasConversion(d => d.Value, value => AchivementDescription.Create(value))
             .IsRequired();
 
+        builder.HasOne<Game>()
+            .WithMany()
+            .HasForeignKey(x => x.GameId);
+
         builder.Property(x => x.UnlockedAt);
+
+        builder.Property<uint>("RowVersion").IsRowVersion();
     }
 }
