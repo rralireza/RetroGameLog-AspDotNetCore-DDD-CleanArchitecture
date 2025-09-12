@@ -15,6 +15,8 @@ public sealed class User : Entity
         RegisteredAt = registeredAt;
     }
 
+    private User() { }
+
     public FullName FullName { get; private set; }
 
     public Email Email { get; private set; }

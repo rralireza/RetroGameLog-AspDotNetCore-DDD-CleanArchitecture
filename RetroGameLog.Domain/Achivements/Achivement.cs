@@ -14,6 +14,8 @@ public sealed class Achivement : Entity
         UnlockedAt = unlockedAt;
     }
 
+    private Achivement() { }
+
     public Guid GameId { get; private set; }
 
     public AchivementTitle Title { get; private set; }

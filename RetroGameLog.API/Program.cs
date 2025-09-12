@@ -1,3 +1,4 @@
+using RetroGameLog.API.Extensions;
 using RetroGameLog.Application;
 using RetroGameLog.Infrastructure;
 
@@ -18,6 +19,8 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+
+    app.ApplyMigrations();
 }
 
 app.UseHttpsRedirection();

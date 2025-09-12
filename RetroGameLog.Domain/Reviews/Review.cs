@@ -14,6 +14,8 @@ public sealed class Review : Entity
         CreatedAt = createdAt;
     }
 
+    private Review() { }
+
     public Guid GameId { get; private set; }
 
     public Reviewer Reviewer { get; private set; }

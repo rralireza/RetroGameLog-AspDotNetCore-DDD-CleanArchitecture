@@ -13,7 +13,7 @@ services:
         - ACCEPT_EULA=Y
         - SA_PASSWORD=Admin@1234
      ports:
-        - "1433:1433"
+        - "11433:1433"
      volumes:
         - mssqldata:/var/opt/mssql
 

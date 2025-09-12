@@ -19,6 +19,8 @@ public sealed class Game : Entity
         Developer = developer;
     }
 
+    private Game() { }
+
     public GameTitle Title { get; private set; }
 
     public Platform Platform { get; private set; }
