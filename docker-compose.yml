@@ -5,6 +5,8 @@ services:
     build:
       context: .
       dockerfile: RetroGameLog.API/Dockerfile
+    depends_on:
+        - mssql
 
   mssql:
      image: mcr.microsoft.com/mssql/server:2022-latest

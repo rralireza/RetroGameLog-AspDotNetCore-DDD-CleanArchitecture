@@ -11,6 +11,6 @@ public static class ApplicationBuilderExtensions
 
         using var database = scope.ServiceProvider.GetRequiredService<RetroGameLogDbContext>();
 
-        database.Database.Migrate();
+        //database.Database.Migrate();
     }
 }
