@@ -40,7 +40,7 @@ public class ExceptionHandlingMiddleware
                 problemDetails.Extensions["errors"] = exceptionDetails.Errors;
 
             context.Response.StatusCode = exceptionDetails.Status;
-
+            
             await context.Response.WriteAsJsonAsync(problemDetails);
         }
     }

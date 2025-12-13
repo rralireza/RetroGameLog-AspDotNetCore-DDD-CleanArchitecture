@@ -19,5 +19,22 @@ services:
      volumes:
         - mssqldata:/var/opt/mssql
 
+  retrogamelogidp:
+       image: quay.io/keycloak/keycloak:latest
+       container_name: RetroGameLog.IdentityProvider
+       command: start-dev --import-realm
+       environment:
+          - KEYCLOAK_ADMIN=admin
+          - KEYCLOAK_ADMIN_PASSWORD=admin
+       volumes:
+         - ./.containers/identity:/opt/keycloak/data
+         - ./.files/keycloak-import:/opt/keycloak/data/import
+       ports:
+         - 9914:8080   
+
+
 volumes:
   mssqldata:
+
+
+ 
