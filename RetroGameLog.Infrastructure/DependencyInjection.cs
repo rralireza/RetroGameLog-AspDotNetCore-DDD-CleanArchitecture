@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -8,10 +7,12 @@ using RetroGameLog.Application.Abstractions.Notification;
 using RetroGameLog.Domain.Abstractions;
 using RetroGameLog.Domain.Games;
 using RetroGameLog.Domain.Users;
+using RetroGameLog.Infrastructure.Authentication;
 using RetroGameLog.Infrastructure.DatabaseConnection;
 using RetroGameLog.Infrastructure.DatabaseContext;
 using RetroGameLog.Infrastructure.Notification;
 using RetroGameLog.Infrastructure.Repositories;
+using RetroGameLog.Infrastructure.Authentication;
 
 namespace RetroGameLog.Infrastructure;
 
@@ -26,6 +27,8 @@ public static class DependencyInjection
             .AddJwtBearer();
 
         services.Configure<AuthenticationOptions>(configuration.GetSection("Authentication"));
+
+        services.ConfigureOptions<JwtBearerOptionsSetup>();
 
         var connectionString = configuration.GetConnectionString("DatabaseConnection") ?? throw new ArgumentNullException(nameof(configuration));
 
