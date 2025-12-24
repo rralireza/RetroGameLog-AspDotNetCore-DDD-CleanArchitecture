@@ -25,6 +25,8 @@ public sealed class User : Entity
 
     public DateTime RegisteredAt { get; private set; }
 
+    public string IdentityId { get; private set; } = string.Empty;
+
     private readonly List<Review> _reviews = new();
 
     public IReadOnlyList<Review> Reviews => _reviews.AsReadOnly();
@@ -43,6 +45,14 @@ public sealed class User : Entity
     {
 
         _achivements.Add(achivement);
+    }
+
+    public void SetIdentityId(string identityId)
+    {
+        if (string.IsNullOrWhiteSpace(identityId))
+            throw new ArgumentNullException("Identity ID is null");
+
+        IdentityId = identityId;
     }
 
     public static User Create(FullName fullName, Email email, Username username, DateTime registeredAt)

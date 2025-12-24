@@ -1,4 +1,5 @@
-﻿using RetroGameLog.Application.Abstractions.Messaging;
+﻿using RetroGameLog.Application.Abstractions.Authentication;
+using RetroGameLog.Application.Abstractions.Messaging;
 using RetroGameLog.Domain.Abstractions;
 using RetroGameLog.Domain.Users;
 
@@ -8,11 +9,13 @@ internal sealed class CreateUserCommandHandler : ICommandHandler<CreateUserComma
 {
     private readonly IUserRepository _userRepository;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IAuthenticationService _authenticationService;
 
-    public CreateUserCommandHandler(IUserRepository userRepository, IUnitOfWork unitOfWork)
+    public CreateUserCommandHandler(IUserRepository userRepository, IUnitOfWork unitOfWork, IAuthenticationService authenticationService)
     {
         _userRepository = userRepository;
         _unitOfWork = unitOfWork;
+        _authenticationService = authenticationService;
     }
 
     public async Task<Result<Guid>> Handle(CreateUserCommand request, CancellationToken cancellationToken)
@@ -23,6 +26,10 @@ internal sealed class CreateUserCommandHandler : ICommandHandler<CreateUserComma
         var fullName = FullName.Create(request.FirstName, request.LastName);
 
         var user = User.Create(fullName, request.Email, request.Username, request.RegisteredAt);
+
+        var identityId = await _authenticationService.RegisterAsync(user, request.Password, cancellationToken);
+
+        user.SetIdentityId(identityId);
 
         _userRepository.Add(user);
 
