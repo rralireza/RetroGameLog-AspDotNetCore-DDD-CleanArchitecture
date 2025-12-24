@@ -1,0 +1,203 @@
+{
+  "id": "RetroGameLog",
+  "realm": "RetroGameLog",
+  "enabled": true,
+  "sslRequired": "external",
+  "registrationAllowed": false,
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "resetPasswordAllowed": true,
+  "editUsernameAllowed": false,
+  "bruteForceProtected": true,
+  "accessTokenLifespan": 3600,
+  "ssoSessionIdleTimeout": 1800,
+  "ssoSessionMaxLifespan": 36000,
+  "offlineSessionIdleTimeout": 2592000,
+  "roles": {
+    "realm": [
+      {
+        "name": "user",
+        "description": "کاربر عادی"
+      },
+      {
+        "name": "admin",
+        "description": "مدیر سیستم"
+      },
+      {
+        "name": "uma_authorization",
+        "description": "${role_uma_authorization}"
+      },
+      {
+        "name": "offline_access",
+        "description": "${role_offline-access}"
+      }
+    ]
+  },
+  "defaultRole": {
+    "name": "default-roles-retrogamelog",
+    "description": "${role_default-roles}",
+    "composite": true,
+    "composites": {
+      "realm": ["uma_authorization", "offline_access"]
+    }
+  },
+  "users": [
+    {
+      "username": "service-account-retro-admin-auth-client",
+      "enabled": true,
+      "serviceAccountClientId": "retro_admin_auth_client",
+      "realmRoles": ["admin"]
+    }
+  ],
+  "clients": [
+    {
+      "clientId": "retro_auth_client",
+      "name": "Retro Auth Client",
+      "enabled": true,
+      "publicClient": false,
+      "protocol": "openid-connect",
+      "clientAuthenticatorType": "client-secret",
+      "secret": "retro-auth-client-secret-CHANGE-ME",
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": true,
+      "serviceAccountsEnabled": false,
+      "frontchannelLogout": true,
+      "attributes": {
+        "access.token.lifespan": "3600"
+      },
+      "fullScopeAllowed": true,
+      "protocolMappers": [
+        {
+          "name": "realm roles",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-realm-role-mapper",
+          "config": {
+            "claim.name": "realm_access.roles",
+            "jsonType.label": "String",
+            "multivalued": "true",
+            "access.token.claim": "true",
+            "id.token.claim": "true"
+          }
+        },
+        {
+          "name": "client roles",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-client-role-mapper",
+          "config": {
+            "claim.name": "resource_access.${client_id}.roles",
+            "jsonType.label": "String",
+            "multivalued": "true",
+            "access.token.claim": "true"
+          }
+        }
+      ],
+      "defaultClientScopes": ["profile", "email", "roles", "web-origins"],
+      "optionalClientScopes": ["offline_access"]
+    },
+    {
+      "clientId": "retro_admin_auth_client",
+      "name": "Retro Admin Auth Client",
+      "enabled": true,
+      "publicClient": false,
+      "protocol": "openid-connect",
+      "clientAuthenticatorType": "client-secret",
+      "secret": "retro-admin-auth-client-secret-CHANGE-ME",
+      "standardFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": true,
+      "frontchannelLogout": true,
+      "attributes": {
+        "access.token.lifespan": "86400"
+      },
+      "fullScopeAllowed": true,
+      "defaultClientScopes": ["profile", "email", "roles"],
+      "optionalClientScopes": ["offline_access"]
+    },
+    {
+      "clientId": "account",
+      "publicClient": true,
+      "protocol": "openid-connect",
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "fullScopeAllowed": false
+    },
+    {
+      "clientId": "account-console",
+      "publicClient": true,
+      "protocol": "openid-connect",
+      "standardFlowEnabled": true,
+      "fullScopeAllowed": false
+    },
+    {
+      "clientId": "admin-cli",
+      "publicClient": true,
+      "protocol": "openid-connect",
+      "directAccessGrantsEnabled": true,
+      "fullScopeAllowed": false
+    },
+    {
+      "clientId": "broker",
+      "bearerOnly": true,
+      "protocol": "openid-connect",
+      "fullScopeAllowed": false
+    },
+    {
+      "clientId": "realm-management",
+      "bearerOnly": true,
+      "protocol": "openid-connect",
+      "fullScopeAllowed": false
+    },
+    {
+      "clientId": "security-admin-console",
+      "publicClient": true,
+      "protocol": "openid-connect",
+      "standardFlowEnabled": true,
+      "fullScopeAllowed": false
+    }
+  ],
+  "clientScopes": [
+    {
+      "name": "profile",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": "true",
+        "display.on.consent.screen": "true"
+      }
+    },
+    {
+      "name": "email",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": "true",
+        "display.on.consent.screen": "true"
+      }
+    },
+    {
+      "name": "roles",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": "false",
+        "display.on.consent.screen": "true"
+      }
+    },
+    {
+      "name": "web-origins",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": "false"
+      }
+    },
+    {
+      "name": "offline_access",
+      "protocol": "openid-connect",
+      "attributes": {
+        "display.on.consent.screen": "true"
+      }
+    }
+  ],
+  "defaultDefaultClientScopes": ["profile", "email", "roles", "web-origins"],
+  "defaultOptionalClientScopes": ["offline_access"],
+  "browserFlow": "browser",
+  "directGrantFlow": "direct grant",
+  "requiredCredentials": ["password"]
+}

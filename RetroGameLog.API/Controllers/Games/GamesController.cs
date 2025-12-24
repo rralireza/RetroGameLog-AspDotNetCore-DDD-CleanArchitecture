@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RetroGameLog.Application.Games.CreateGame;
 using RetroGameLog.Application.Games.GetAllGames;
@@ -6,6 +7,8 @@ using RetroGameLog.Application.Games.GetGame;
 
 namespace RetroGameLog.API.Controllers.Games;
 
+
+[Authorize]
 [Route("api/[controller]")]
 [ApiController]
 public class GamesController : ControllerBase

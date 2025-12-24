@@ -12,7 +12,6 @@ using RetroGameLog.Infrastructure.DatabaseConnection;
 using RetroGameLog.Infrastructure.DatabaseContext;
 using RetroGameLog.Infrastructure.Notification;
 using RetroGameLog.Infrastructure.Repositories;
-using RetroGameLog.Infrastructure.Authentication;
 
 namespace RetroGameLog.Infrastructure;
 
@@ -29,7 +28,14 @@ public static class DependencyInjection
         services.Configure<AuthenticationOptions>(configuration.GetSection("Authentication"));
 
         services.ConfigureOptions<JwtBearerOptionsSetup>();
+        
+        AddPresistence(services, configuration);
 
+        return services;
+    }
+
+    private static void AddPresistence(IServiceCollection services, IConfiguration configuration)
+    {
         var connectionString = configuration.GetConnectionString("DatabaseConnection") ?? throw new ArgumentNullException(nameof(configuration));
 
         services.AddDbContext<RetroGameLogDbContext>(options =>
@@ -44,7 +50,5 @@ public static class DependencyInjection
         services.AddScoped<IUnitOfWork>(provider => provider.GetRequiredService<RetroGameLogDbContext>());
 
         services.AddSingleton<ISqlConnectionFactory>(new SqlConnectionFactory(connectionString));
-
-        return services;
     }
 }
