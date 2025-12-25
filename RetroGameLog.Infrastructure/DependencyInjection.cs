@@ -23,10 +23,19 @@ public static class DependencyInjection
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddTransient<INotificationService, NotificationService>();
+        
+        AddAuthentication(services, configuration);
 
+        AddPresistence(services, configuration);
+
+        return services;
+    }
+
+    private static void AddAuthentication(IServiceCollection services, IConfiguration configuration)
+    {
         services
-            .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer();
+                    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                    .AddJwtBearer();
 
         services.Configure<AuthenticationOptions>(configuration.GetSection("Authentication"));
 
@@ -43,9 +52,12 @@ public static class DependencyInjection
             httpClient.BaseAddress = new Uri(keyCloakOptions.AdminUrl);
         }).AddHttpMessageHandler<AdminAuthorizationDelegationHandler>();
 
-        AddPresistence(services, configuration);
+        services.AddHttpClient<IJwtService, JwtService>((sp, client) =>
+        {
+            var keyCloakOptions = sp.GetRequiredService<IOptions<KeyCloakOptions>>().Value;
 
-        return services;
+            client.BaseAddress = new Uri(keyCloakOptions.TokenUrl);
+        });
     }
 
     private static void AddPresistence(IServiceCollection services, IConfiguration configuration)

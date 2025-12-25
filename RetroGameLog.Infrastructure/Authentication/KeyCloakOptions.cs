@@ -2,10 +2,6 @@
 
 public sealed class KeyCloakOptions
 {
-    public string BaseUrl { get; init; } = string.Empty;
-
-    public string Realm { get; init; } = string.Empty;
-
     public string AdminUrl { get; set; } = string.Empty;
 
     public string TokenUrl { get; set; } = string.Empty;
