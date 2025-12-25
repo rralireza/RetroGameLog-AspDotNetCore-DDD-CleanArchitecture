@@ -1,7 +1,10 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using RetroGameLog.Application.Abstractions.Authentication;
 using RetroGameLog.Application.Abstractions.Data;
 using RetroGameLog.Application.Abstractions.Notification;
 using RetroGameLog.Domain.Abstractions;
@@ -28,7 +31,18 @@ public static class DependencyInjection
         services.Configure<AuthenticationOptions>(configuration.GetSection("Authentication"));
 
         services.ConfigureOptions<JwtBearerOptionsSetup>();
-        
+
+        services.Configure<KeyCloakOptions>(configuration.GetSection("KeyCloak"));
+
+        services.AddTransient<AdminAuthorizationDelegationHandler>();
+
+        services.AddHttpClient<IAuthenticationService, AuthenticationService>((sp, httpClient) =>
+        {
+            var keyCloakOptions = sp.GetRequiredService<IOptions<KeyCloakOptions>>().Value;
+
+            httpClient.BaseAddress = new Uri(keyCloakOptions.AdminUrl);
+        }).AddHttpMessageHandler<AdminAuthorizationDelegationHandler>();
+
         AddPresistence(services, configuration);
 
         return services;

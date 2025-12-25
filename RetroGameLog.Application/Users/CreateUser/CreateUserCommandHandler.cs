@@ -25,7 +25,11 @@ internal sealed class CreateUserCommandHandler : ICommandHandler<CreateUserComma
 
         var fullName = FullName.Create(request.FirstName, request.LastName);
 
-        var user = User.Create(fullName, request.Email, request.Username, request.RegisteredAt);
+        var email = new Email(request.Email);
+
+        var username = new Username(request.Username);
+
+        var user = User.Create(fullName, email, username);
 
         var identityId = await _authenticationService.RegisterAsync(user, request.Password, cancellationToken);
 

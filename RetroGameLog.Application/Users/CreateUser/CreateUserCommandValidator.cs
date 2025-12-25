@@ -6,22 +6,20 @@ public sealed class CreateUserCommandValidator : AbstractValidator<CreateUserCom
 {
     public CreateUserCommandValidator()
     {
-        RuleFor(x => x.Email.Value)
+        RuleFor(x => x.Email)
             .NotEmpty()
             .WithMessage("Email cannot be blank")
             .EmailAddress()
             .WithMessage("Email must be in correct format!");
 
-        RuleFor(x => x.Username.Value)
+        RuleFor(x => x.Username)
             .NotEmpty()
             .WithMessage("Username cannot be blank")
-            .Length(20)
+            .MaximumLength(20)
             .WithMessage("Username length cannot be more than 20 characters");
 
         RuleFor(x => x.FirstName).NotEmpty();
 
         RuleFor(x => x.LastName).NotEmpty();
-
-        RuleFor(x => x.RegisteredAt).NotEmpty().Equal(DateTime.Now);
     }
 }

@@ -48,6 +48,10 @@ internal sealed class UserConfiguration : IEntityTypeConfiguration<User>
             .HasColumnName("RegisteredAt")
             .IsRequired();
 
-        builder.Property<uint>("RowVersion").IsRowVersion();
+        //builder.Property<uint>("RowVersion").IsRowVersion();
+
+        builder.HasIndex(x => x.Email).IsUnique();
+
+        builder.HasIndex(x => x.IdentityId).IsUnique();
     }
 }

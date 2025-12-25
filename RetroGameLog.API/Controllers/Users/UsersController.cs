@@ -16,11 +16,11 @@ public class UsersController : ControllerBase
         _sender = sender;
     }
 
-    [HttpPost]
+    [HttpPost(nameof(CreateUser))]
     [AllowAnonymous]
     public async Task<IActionResult> CreateUser(CreateUserRequestDto request, CancellationToken cancellationToken = default)
     {
-        var command = new CreateUserCommand(request.FirstName, request.LastName, request.Email, request.Username, request.Password, request.RegisteredAt);
+        var command = new CreateUserCommand(request.FirstName, request.LastName, request.Email, request.Username, request.Password);
 
         var result = await _sender.Send(command, cancellationToken);
 

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RetroGameLog.Infrastructure.DatabaseContext;
 
@@ -11,9 +12,11 @@ using RetroGameLog.Infrastructure.DatabaseContext;
 namespace RetroGameLog.Infrastructure.Migrations
 {
     [DbContext(typeof(RetroGameLogDbContext))]
-    partial class RetroGameLogDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251224081320_add identityId column to users table")]
+    partial class addidentityIdcolumntouserstable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -160,11 +163,10 @@ namespace RetroGameLog.Infrastructure.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("RegisteredAt");
 
-                    b.Property<byte[]>("RowVersion")
+                    b.Property<long>("RowVersion")
                         .IsConcurrencyToken()
-                        .IsRequired()
                         .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("rowversion");
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Username")
                         .IsRequired()

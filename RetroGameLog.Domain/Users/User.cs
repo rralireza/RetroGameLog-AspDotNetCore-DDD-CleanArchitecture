@@ -2,17 +2,18 @@
 using RetroGameLog.Domain.Achivements;
 using RetroGameLog.Domain.Reviews;
 using RetroGameLog.Domain.Users.Events;
+using System.ComponentModel.DataAnnotations;
 
 namespace RetroGameLog.Domain.Users;
 
 public sealed class User : Entity
 {
-    private User(Guid id, FullName fullName, Email email, Username userName, DateTime registeredAt) : base(id)
+    private User(Guid id, FullName fullName, Email email, Username userName) : base(id)
     {
         FullName = fullName;
         Email = email;
         Username = userName;
-        RegisteredAt = registeredAt;
+        RegisteredAt = DateTime.UtcNow;
     }
 
     private User() { }
@@ -23,7 +24,7 @@ public sealed class User : Entity
 
     public Username Username { get; private set; }
 
-    public DateTime RegisteredAt { get; private set; }
+    public DateTime RegisteredAt { get; private set; } = DateTime.UtcNow;
 
     public string IdentityId { get; private set; } = string.Empty;
 
@@ -55,7 +56,7 @@ public sealed class User : Entity
         IdentityId = identityId;
     }
 
-    public static User Create(FullName fullName, Email email, Username username, DateTime registeredAt)
+    public static User Create(FullName fullName, Email email, Username username)
     {
         if (fullName is null)
             throw new ArgumentNullException($"{nameof(FullName)} cannot be blank!");
@@ -66,10 +67,7 @@ public sealed class User : Entity
         if (username is null)
             throw new ArgumentNullException($"{nameof(Username)} cannot be blank!");
 
-        if (registeredAt > DateTime.UtcNow || registeredAt < DateTime.UtcNow)
-            throw new ArgumentException("Registeration date is invalid!");
-
-        var user = new User(Guid.NewGuid(), fullName, email, username, registeredAt);
+        var user = new User(Guid.NewGuid(), fullName, email, username);
 
         user.RaiseDomainEvent(new UserCreatedDomainEvent(user.Id));
 
