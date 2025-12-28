@@ -21,8 +21,8 @@ internal sealed class JwtService : IJwtService
     {
         var loginRequestParameters = new KeyValuePair<string, string>[]
         {
-            new("client_id", _keyCloakOptions.AdminClientId),
-            new("client_secret", _keyCloakOptions.AdminClientSecret),
+            new("client_id", _keyCloakOptions.AuthClientId),
+            new("client_secret", _keyCloakOptions.AuthClientSecret),
             new("scope", "openid email"),
             new("grant_type", "password"),
             new("username", email),
@@ -32,6 +32,13 @@ internal sealed class JwtService : IJwtService
         FormUrlEncodedContent loginContent = new(loginRequestParameters);
 
         HttpResponseMessage response = await _httpClient.PostAsync("", loginContent, cancellationToken);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            var errorContent = await response.Content.ReadAsStringAsync(cancellationToken);
+            
+            return Result.Failure<string>(new Error("Auth.Failed", $"Keycloak error: {response.StatusCode} - {errorContent}"));
+        }
 
         response.EnsureSuccessStatusCode();
 

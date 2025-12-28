@@ -8,12 +8,13 @@ namespace RetroGameLog.Domain.Users;
 
 public sealed class User : Entity
 {
-    private User(Guid id, FullName fullName, Email email, Username userName) : base(id)
+    private User(Guid id, FullName fullName, Email email, Username userName, List<Role> userRoles) : base(id)
     {
         FullName = fullName;
         Email = email;
         Username = userName;
         RegisteredAt = DateTime.UtcNow;
+        _roles = userRoles;
     }
 
     private User() { }
@@ -36,6 +37,10 @@ public sealed class User : Entity
 
     public IReadOnlyList<Achivement> Achivements => _achivements.AsReadOnly();
 
+    private readonly List<Role> _roles = new();
+
+    public IReadOnlyCollection<Role> Roles => _roles.AsReadOnly();
+
     public void AddReview(Review review)
     {
 
@@ -56,7 +61,7 @@ public sealed class User : Entity
         IdentityId = identityId;
     }
 
-    public static User Create(FullName fullName, Email email, Username username)
+    public static User Create(FullName fullName, Email email, Username username, List<Role> roles)
     {
         if (fullName is null)
             throw new ArgumentNullException($"{nameof(FullName)} cannot be blank!");
@@ -67,7 +72,12 @@ public sealed class User : Entity
         if (username is null)
             throw new ArgumentNullException($"{nameof(Username)} cannot be blank!");
 
-        var user = new User(Guid.NewGuid(), fullName, email, username);
+        var user = new User(Guid.NewGuid(), fullName, email, username, roles);
+
+        if (!roles.Any())
+        {
+            user._roles.Add(Role.User);
+        }
 
         user.RaiseDomainEvent(new UserCreatedDomainEvent(user.Id));
 
