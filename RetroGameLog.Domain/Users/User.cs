@@ -8,13 +8,15 @@ namespace RetroGameLog.Domain.Users;
 
 public sealed class User : Entity
 {
-    private User(Guid id, FullName fullName, Email email, Username userName, List<Role> userRoles) : base(id)
+    private User(Guid id, FullName fullName, Email email, Username userName, List<Role>? userRoles) : base(id)
     {
         FullName = fullName;
         Email = email;
         Username = userName;
         RegisteredAt = DateTime.UtcNow;
-        _roles = userRoles;
+
+        if (userRoles is not null)
+            _roles.AddRange(userRoles);
     }
 
     private User() { }
@@ -28,6 +30,9 @@ public sealed class User : Entity
     public DateTime RegisteredAt { get; private set; } = DateTime.UtcNow;
 
     public string IdentityId { get; private set; } = string.Empty;
+
+    [Timestamp]
+    public byte[] RowVersion { get; init; }
 
     private readonly List<Review> _reviews = new();
 
@@ -61,7 +66,7 @@ public sealed class User : Entity
         IdentityId = identityId;
     }
 
-    public static User Create(FullName fullName, Email email, Username username, List<Role> roles)
+    public static User Create(FullName fullName, Email email, Username username, List<Role>? roles = null)
     {
         if (fullName is null)
             throw new ArgumentNullException($"{nameof(FullName)} cannot be blank!");
@@ -74,7 +79,7 @@ public sealed class User : Entity
 
         var user = new User(Guid.NewGuid(), fullName, email, username, roles);
 
-        if (!roles.Any())
+        if (roles == null)
         {
             user._roles.Add(Role.User);
         }

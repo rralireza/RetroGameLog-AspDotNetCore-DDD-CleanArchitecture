@@ -12,8 +12,8 @@ using RetroGameLog.Infrastructure.DatabaseContext;
 namespace RetroGameLog.Infrastructure.Migrations
 {
     [DbContext(typeof(RetroGameLogDbContext))]
-    [Migration("20251224081320_add identityId column to users table")]
-    partial class addidentityIdcolumntouserstable
+    [Migration("20251229194324_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -143,6 +143,23 @@ namespace RetroGameLog.Infrastructure.Migrations
                     b.ToTable("Reviews", (string)null);
                 });
 
+            modelBuilder.Entity("RetroGameLog.Domain.Users.Role", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Role");
+                });
+
             modelBuilder.Entity("RetroGameLog.Domain.Users.User", b =>
                 {
                     b.Property<Guid>("Id")
@@ -163,10 +180,11 @@ namespace RetroGameLog.Infrastructure.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("RegisteredAt");
 
-                    b.Property<long>("RowVersion")
+                    b.Property<byte[]>("RowVersion")
                         .IsConcurrencyToken()
+                        .IsRequired()
                         .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("bigint");
+                        .HasColumnType("rowversion");
 
                     b.Property<string>("Username")
                         .IsRequired()
@@ -183,6 +201,21 @@ namespace RetroGameLog.Infrastructure.Migrations
                         .IsUnique();
 
                     b.ToTable("Users", (string)null);
+                });
+
+            modelBuilder.Entity("RoleUser", b =>
+                {
+                    b.Property<int>("RolesId")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("UsersId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("RolesId", "UsersId");
+
+                    b.HasIndex("UsersId");
+
+                    b.ToTable("RoleUser");
                 });
 
             modelBuilder.Entity("RetroGameLog.Domain.Achivements.Achivement", b =>
@@ -239,6 +272,21 @@ namespace RetroGameLog.Infrastructure.Migrations
                         });
 
                     b.Navigation("FullName")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("RoleUser", b =>
+                {
+                    b.HasOne("RetroGameLog.Domain.Users.Role", null)
+                        .WithMany()
+                        .HasForeignKey("RolesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("RetroGameLog.Domain.Users.User", null)
+                        .WithMany()
+                        .HasForeignKey("UsersId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 

@@ -48,7 +48,18 @@ internal sealed class UserConfiguration : IEntityTypeConfiguration<User>
             .HasColumnName("RegisteredAt")
             .IsRequired();
 
+        builder
+            .Property(x => x.RowVersion)
+            .IsConcurrencyToken()
+            .IsRowVersion();
+
         //builder.Property<uint>("RowVersion").IsRowVersion();
+
+        //builder
+        //    .Property(x => x.RowVersion)
+        //    .HasColumnType("timestamp")
+        //    .IsConcurrencyToken()
+        //    .ValueGeneratedOnAddOrUpdate();
 
         builder.HasIndex(x => x.Email).IsUnique();
 
