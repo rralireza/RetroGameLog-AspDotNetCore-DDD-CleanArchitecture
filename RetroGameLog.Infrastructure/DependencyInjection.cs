@@ -1,4 +1,5 @@
 ﻿
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -11,10 +12,14 @@ using RetroGameLog.Domain.Abstractions;
 using RetroGameLog.Domain.Games;
 using RetroGameLog.Domain.Users;
 using RetroGameLog.Infrastructure.Authentication;
+using RetroGameLog.Infrastructure.Authorization;
 using RetroGameLog.Infrastructure.DatabaseConnection;
 using RetroGameLog.Infrastructure.DatabaseContext;
 using RetroGameLog.Infrastructure.Notification;
 using RetroGameLog.Infrastructure.Repositories;
+using AuthenticationOptions = RetroGameLog.Infrastructure.Authentication.AuthenticationOptions;
+using AuthenticationService = RetroGameLog.Infrastructure.Authentication.AuthenticationService;
+using IAuthenticationService = RetroGameLog.Application.Abstractions.Authentication.IAuthenticationService;
 
 namespace RetroGameLog.Infrastructure;
 
@@ -23,12 +28,21 @@ public static class DependencyInjection
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddTransient<INotificationService, NotificationService>();
-        
+
         AddAuthentication(services, configuration);
 
         AddPresistence(services, configuration);
+        
+        AddAuthorization(services);
 
         return services;
+    }
+
+    private static void AddAuthorization(IServiceCollection services)
+    {
+        services.AddScoped<AuthorizationService>();
+
+        services.AddTransient<IClaimsTransformation, CustomClaimTransformation>();
     }
 
     private static void AddAuthentication(IServiceCollection services, IConfiguration configuration)
