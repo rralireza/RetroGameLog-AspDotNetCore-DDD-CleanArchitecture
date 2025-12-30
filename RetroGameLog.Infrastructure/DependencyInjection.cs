@@ -1,6 +1,7 @@
 ﻿
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -32,7 +33,7 @@ public static class DependencyInjection
         AddAuthentication(services, configuration);
 
         AddPresistence(services, configuration);
-        
+
         AddAuthorization(services);
 
         return services;
@@ -43,6 +44,10 @@ public static class DependencyInjection
         services.AddScoped<AuthorizationService>();
 
         services.AddTransient<IClaimsTransformation, CustomClaimTransformation>();
+
+        services.AddTransient<IAuthorizationHandler, PermissionAuthorizationHandler>();
+
+        services.AddTransient<IAuthorizationPolicyProvider, PermissionAuthorizationPolicyProvider>();
     }
 
     private static void AddAuthentication(IServiceCollection services, IConfiguration configuration)
