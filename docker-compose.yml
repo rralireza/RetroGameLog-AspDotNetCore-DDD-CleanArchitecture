@@ -32,7 +32,15 @@ services:
        ports:
          - 9914:8080   
 
-
+  retrogamelog-seq:
+       image: datalust/seq:latest
+       container_name: RetroGameLog.Seq
+       environment:
+         - ACCEPT_EULA=Y
+         - SEQ_FIRSTRUN_ADMINPASSWORD=test
+       ports:
+         - 7826:7826
+         - 4344:80 
 volumes:
   mssqldata:
 
