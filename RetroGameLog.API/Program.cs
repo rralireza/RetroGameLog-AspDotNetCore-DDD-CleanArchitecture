@@ -31,6 +31,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseRequestContextLogging();
+
 app.UseSerilogRequestLogging();
 
 app.UseAuthentication();

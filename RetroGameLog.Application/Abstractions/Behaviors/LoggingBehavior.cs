@@ -1,14 +1,18 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
 using RetroGameLog.Application.Abstractions.Messaging;
+using RetroGameLog.Domain.Abstractions;
+using Serilog.Context;
 
 namespace RetroGameLog.Application.Abstractions.Behaviors;
 
-public class LoggingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : IBaseCommand
+public class LoggingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+    where TRequest : IBaseRequest
+    where TResponse : Result
 {
-    private readonly ILogger<TRequest> _logger;
+    private readonly ILogger<LoggingBehavior<TRequest, TResponse>> _logger;
 
-    public LoggingBehavior(ILogger<TRequest> logger)
+    public LoggingBehavior(ILogger<LoggingBehavior<TRequest, TResponse>> logger)
     {
         _logger = logger;
     }
@@ -23,9 +27,18 @@ public class LoggingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, 
             _logger.LogInformation($"Executing {requestName}...");
 
             var response = await next();
-            
-            _logger.LogInformation($"{requestName} has completed successfully.");
-            
+
+            if (response.IsSuccess)
+            {
+                _logger.LogInformation($"{requestName} has completed successfully.");
+            }
+            else
+            {
+                using (LogContext.PushProperty("ErrorTitle", response.Error, true))
+                {
+                    _logger.LogError($"{requestName} has failed. Description: {response.Error}");
+                }
+            }
             return response;
         }
         catch (Exception ex)
