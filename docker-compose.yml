@@ -39,8 +39,8 @@ services:
          - ACCEPT_EULA=Y
          - SEQ_FIRSTRUN_ADMINPASSWORD=test
        ports:
-         - 7826:7826
-         - 4344:80 
+         - 5341:5341
+         - 7826:80 
 volumes:
   mssqldata:
 
