@@ -4,11 +4,12 @@ using Microsoft.AspNetCore.Mvc;
 using RetroGameLog.Application.Games.CreateGame;
 using RetroGameLog.Application.Games.GetAllGames;
 using RetroGameLog.Application.Games.GetGame;
+using RetroGameLog.Infrastructure.Authorization;
 
 namespace RetroGameLog.API.Controllers.Games;
 
 
-[Authorize]
+//[Authorize]
 [Route("api/[controller]")]
 [ApiController]
 public class GamesController : ControllerBase
@@ -20,6 +21,7 @@ public class GamesController : ControllerBase
         _sender = sender;
     }
 
+    [HasPermission("User.Read")]
     [HttpGet("GetAllGames")]
     public async Task<IActionResult> GetAllGames(CancellationToken cancellationToken)
     {

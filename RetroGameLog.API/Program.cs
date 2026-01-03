@@ -1,9 +1,15 @@
 using RetroGameLog.API.Extensions;
 using RetroGameLog.Application;
 using RetroGameLog.Infrastructure;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
+builder
+    .Host
+    .UseSerilog((context, configuration) => configuration
+    .ReadFrom.Configuration(context.Configuration));
 
 builder.Services.AddControllers();
 
@@ -25,11 +31,13 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseCustomExceptionHandling();
+app.UseSerilogRequestLogging();
 
 app.UseAuthentication();
 
 app.UseAuthorization();
+
+app.UseCustomExceptionHandling();
 
 app.MapControllers();
 
