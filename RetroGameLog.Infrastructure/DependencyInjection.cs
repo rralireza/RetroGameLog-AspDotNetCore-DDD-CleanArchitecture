@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using RetroGameLog.Application.Abstractions.Authentication;
+using RetroGameLog.Application.Abstractions.Caching;
 using RetroGameLog.Application.Abstractions.Data;
 using RetroGameLog.Application.Abstractions.Notification;
 using RetroGameLog.Domain.Abstractions;
@@ -14,6 +15,7 @@ using RetroGameLog.Domain.Games;
 using RetroGameLog.Domain.Users;
 using RetroGameLog.Infrastructure.Authentication;
 using RetroGameLog.Infrastructure.Authorization;
+using RetroGameLog.Infrastructure.Caching;
 using RetroGameLog.Infrastructure.DatabaseConnection;
 using RetroGameLog.Infrastructure.DatabaseContext;
 using RetroGameLog.Infrastructure.Notification;
@@ -35,8 +37,19 @@ public static class DependencyInjection
         AddPresistence(services, configuration);
 
         AddAuthorization(services);
+        
+        AddCaching(services, configuration);
 
         return services;
+    }
+
+    private static void AddCaching(IServiceCollection services, IConfiguration configuration)
+    {
+        var connectionString = configuration.GetConnectionString("Cache") ?? throw new ApplicationException(nameof(configuration));
+
+        services.AddStackExchangeRedisCache(options => options.Configuration = connectionString);
+
+        services.AddSingleton<ICacheService, CacheService>();
     }
 
     private static void AddAuthorization(IServiceCollection services)
