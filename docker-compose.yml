@@ -41,6 +41,14 @@ services:
        ports:
          - 5341:5341
          - 7826:80 
+
+  retrogamelog-redis:
+       image: redis:latest
+       container_name: RetroGameLog.Redis
+       restart: always
+       ports:
+         - 6379:6379
+
 volumes:
   mssqldata:
 
