@@ -37,8 +37,10 @@ public static class DependencyInjection
         AddPresistence(services, configuration);
 
         AddAuthorization(services);
-        
+
         AddCaching(services, configuration);
+
+        AddHealthChecks(services, configuration);
 
         return services;
     }
@@ -108,5 +110,12 @@ public static class DependencyInjection
         services.AddScoped<IUnitOfWork>(provider => provider.GetRequiredService<RetroGameLogDbContext>());
 
         services.AddSingleton<ISqlConnectionFactory>(new SqlConnectionFactory(connectionString));
+    }
+
+    private static void AddHealthChecks(IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddHealthChecks()
+            .AddSqlServer(configuration.GetConnectionString("DatabaseConnection")!)
+            .AddRedis(configuration.GetConnectionString("Cache")!);
     }
 }

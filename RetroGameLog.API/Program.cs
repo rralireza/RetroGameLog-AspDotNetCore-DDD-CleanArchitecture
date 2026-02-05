@@ -1,3 +1,4 @@
+using HealthChecks.UI.Client;
 using RetroGameLog.API.Extensions;
 using RetroGameLog.Application;
 using RetroGameLog.Infrastructure;
@@ -42,5 +43,10 @@ app.UseAuthorization();
 app.UseCustomExceptionHandling();
 
 app.MapControllers();
+
+app.MapHealthChecks("healthStatus", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions
+{
+    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+});
 
 app.Run();
