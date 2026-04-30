@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using Asp.Versioning;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RetroGameLog.Application.Games.CreateGame;
@@ -9,8 +10,9 @@ using RetroGameLog.Infrastructure.Authorization;
 namespace RetroGameLog.API.Controllers.Games;
 
 
-//[Authorize]
-[Route("api/[controller]")]
+[Authorize]
+[ApiVersion("1")]
+[Route("api/v{version:apiVersion}/[controller]")]
 [ApiController]
 public class GamesController : ControllerBase
 {
@@ -21,8 +23,9 @@ public class GamesController : ControllerBase
         _sender = sender;
     }
 
-    //[HasPermission("User.Read")]
     [HttpGet("GetAllGames")]
+    [MapToApiVersion("1")]
+    [HasPermission("User.Read")]
     public async Task<IActionResult> GetAllGames(CancellationToken cancellationToken)
     {
         var query = new GetAllGamesQuery();
