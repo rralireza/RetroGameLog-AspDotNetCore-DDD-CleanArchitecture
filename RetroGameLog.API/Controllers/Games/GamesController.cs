@@ -21,7 +21,7 @@ public class GamesController : ControllerBase
         _sender = sender;
     }
 
-    [HasPermission("User.Read")]
+    //[HasPermission("User.Read")]
     [HttpGet("GetAllGames")]
     public async Task<IActionResult> GetAllGames(CancellationToken cancellationToken)
     {

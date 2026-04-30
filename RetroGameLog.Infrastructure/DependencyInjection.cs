@@ -1,4 +1,5 @@
 ﻿
+using Asp.Versioning;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -41,6 +42,8 @@ public static class DependencyInjection
         AddCaching(services, configuration);
 
         AddHealthChecks(services, configuration);
+
+        AddApiVersioning(services);
 
         return services;
     }
@@ -112,10 +115,16 @@ public static class DependencyInjection
         services.AddSingleton<ISqlConnectionFactory>(new SqlConnectionFactory(connectionString));
     }
 
-    private static void AddHealthChecks(IServiceCollection services, IConfiguration configuration)
-    {
-        services.AddHealthChecks()
+    private static void AddHealthChecks(IServiceCollection services, IConfiguration configuration) => services
+            .AddHealthChecks()
             .AddSqlServer(configuration.GetConnectionString("DatabaseConnection")!)
             .AddRedis(configuration.GetConnectionString("Cache")!);
-    }
+
+    private static void AddApiVersioning(IServiceCollection services) => services
+        .AddApiVersioning(options =>
+        {
+            options.DefaultApiVersion = new Asp.Versioning.ApiVersion(1);
+            options.ReportApiVersions = true;
+            options.ApiVersionReader = new UrlSegmentApiVersionReader();
+        }).AddMvc();
 }
