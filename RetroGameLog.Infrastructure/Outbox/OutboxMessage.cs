@@ -1,0 +1,26 @@
+﻿namespace RetroGameLog.Infrastructure.Outbox;
+
+public sealed class OutboxMessage
+{
+    public OutboxMessage(Guid id, DateTime occurredOnUtc, string type, string content, DateTime? processedOnUtc, string? error)
+    {
+        Id = id;
+        OccurredOnUtc = occurredOnUtc;
+        Type = type;
+        Content = content;
+        ProcessedOnUtc = processedOnUtc;
+        Error = error;
+    }
+
+    public Guid Id { get; init; }
+
+    public DateTime OccurredOnUtc { get; init; }
+
+    public string Type { get; init; }
+
+    public string Content { get; set; }
+
+    public DateTime? ProcessedOnUtc { get; init; }
+
+    public string? Error { get; init; }
+}
