@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Quartz;
 using RetroGameLog.Application.Abstractions.Authentication;
 using RetroGameLog.Application.Abstractions.Caching;
 using RetroGameLog.Application.Abstractions.Data;
@@ -22,6 +23,7 @@ using RetroGameLog.Infrastructure.Clock;
 using RetroGameLog.Infrastructure.DatabaseConnection;
 using RetroGameLog.Infrastructure.DatabaseContext;
 using RetroGameLog.Infrastructure.Notification;
+using RetroGameLog.Infrastructure.Outbox;
 using RetroGameLog.Infrastructure.Repositories;
 using AuthenticationOptions = RetroGameLog.Infrastructure.Authentication.AuthenticationOptions;
 using AuthenticationService = RetroGameLog.Infrastructure.Authentication.AuthenticationService;
@@ -48,6 +50,8 @@ public static class DependencyInjection
         AddHealthChecks(services, configuration);
 
         AddApiVersioning(services);
+
+        AddBackgroundJobs(services, configuration);
 
         return services;
     }
@@ -131,4 +135,15 @@ public static class DependencyInjection
             options.ReportApiVersions = true;
             options.ApiVersionReader = new UrlSegmentApiVersionReader();
         }).AddMvc();
+
+    private static void AddBackgroundJobs(IServiceCollection services, IConfiguration configuration)
+    {
+        services.Configure<OutboxMessage>(configuration.GetSection("Outbox"));
+
+        services.AddQuartz();
+
+        services.AddQuartzHostedService(options => options.WaitForJobsToComplete = true);
+
+        services.ConfigureOptions<ProcessOutboxMessagesJobSetup>();
+    }
 }
