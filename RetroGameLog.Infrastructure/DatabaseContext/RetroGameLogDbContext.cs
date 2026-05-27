@@ -59,7 +59,7 @@ public sealed class RetroGameLogDbContext : DbContext, IUnitOfWork
 
                 return domainEvents;
             })
-            .Select(x => new OutboxMessage(Guid.NewGuid(), _dateTimeProvider.UtcNow, x.GetType().Name, JsonConvert.SerializeObject(x, JsonSerializerSettings)))
+            .Select(x => new OutboxMessage(Guid.NewGuid(), _dateTimeProvider.UtcNow, x.GetType().Name, JsonConvert.SerializeObject(x, JsonSerializerSettings))) //Convert domain events into outbox message type
             .ToList();
 
         AddRange(outboxMessages);
