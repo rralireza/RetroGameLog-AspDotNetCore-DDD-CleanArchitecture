@@ -1,5 +1,7 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using RetroGameLog.Application.Clock;
 using RetroGameLog.Application.Exceptions;
 using RetroGameLog.Domain.Abstractions;
 using RetroGameLog.Infrastructure.Outbox;
@@ -8,11 +10,17 @@ namespace RetroGameLog.Infrastructure.DatabaseContext;
 
 public sealed class RetroGameLogDbContext : DbContext, IUnitOfWork
 {
-    private readonly IPublisher _publisher;
-
-    public RetroGameLogDbContext(DbContextOptions options, IPublisher publisher) : base(options)
+    private static readonly JsonSerializerSettings JsonSerializerSettings = new()
     {
-        _publisher = publisher;
+        TypeNameHandling = TypeNameHandling.All
+    };
+
+
+    private readonly IDateTimeProvider _dateTimeProvider;
+
+    public RetroGameLogDbContext(DbContextOptions options, IDateTimeProvider dateTimeProvider) : base(options)
+    {
+        _dateTimeProvider = dateTimeProvider;
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -26,9 +34,9 @@ public sealed class RetroGameLogDbContext : DbContext, IUnitOfWork
     {
         try
         {
-            var result = await base.SaveChangesAsync(cancellationToken);
+            PublishDomainEvenetsAsOutboxMessages();
 
-            await PublishDomainEvenets();
+            var result = await base.SaveChangesAsync(cancellationToken);
 
             return result;
         }
@@ -38,9 +46,9 @@ public sealed class RetroGameLogDbContext : DbContext, IUnitOfWork
         }
     }
 
-    public async Task PublishDomainEvenets()
+    public void PublishDomainEvenetsAsOutboxMessages()
     {
-        var domainEvents = ChangeTracker
+        var outboxMessages = ChangeTracker
             .Entries<Entity>()
             .Select(x => x.Entity)
             .SelectMany(x =>
@@ -51,15 +59,9 @@ public sealed class RetroGameLogDbContext : DbContext, IUnitOfWork
 
                 return domainEvents;
             })
-            .Select(x => new OutboxMessage
-            {
-
-            })
+            .Select(x => new OutboxMessage(Guid.NewGuid(), _dateTimeProvider.UtcNow, x.GetType().Name, JsonConvert.SerializeObject(x, JsonSerializerSettings)))
             .ToList();
 
-        //foreach (var domainEvent in domainEvents)
-        //{
-        //    await _publisher.Publish(domainEvent);
-        //}
+        AddRange(outboxMessages);
     }
 }
