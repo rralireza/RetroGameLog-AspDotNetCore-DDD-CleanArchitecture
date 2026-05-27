@@ -17,4 +17,8 @@ public sealed class OutboxMessage
     public string Type { get; init; }
 
     public string Content { get; set; }
+
+    public DateTime? ProcessedOnUtc { get; init; }
+
+    public string? Error { get; init; }
 }

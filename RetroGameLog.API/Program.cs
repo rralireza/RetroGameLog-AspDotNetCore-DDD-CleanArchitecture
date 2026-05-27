@@ -27,7 +27,7 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 
-    app.ApplyMigrations();
+    //app.ApplyMigrations();
 }
 
 app.UseHttpsRedirection();

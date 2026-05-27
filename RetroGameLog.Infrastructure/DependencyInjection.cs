@@ -11,12 +11,14 @@ using RetroGameLog.Application.Abstractions.Authentication;
 using RetroGameLog.Application.Abstractions.Caching;
 using RetroGameLog.Application.Abstractions.Data;
 using RetroGameLog.Application.Abstractions.Notification;
+using RetroGameLog.Application.Clock;
 using RetroGameLog.Domain.Abstractions;
 using RetroGameLog.Domain.Games;
 using RetroGameLog.Domain.Users;
 using RetroGameLog.Infrastructure.Authentication;
 using RetroGameLog.Infrastructure.Authorization;
 using RetroGameLog.Infrastructure.Caching;
+using RetroGameLog.Infrastructure.Clock;
 using RetroGameLog.Infrastructure.DatabaseConnection;
 using RetroGameLog.Infrastructure.DatabaseContext;
 using RetroGameLog.Infrastructure.Notification;
@@ -32,6 +34,8 @@ public static class DependencyInjection
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddTransient<INotificationService, NotificationService>();
+
+        services.AddTransient<IDateTimeProvider, DateTimeProvider>();
 
         AddAuthentication(services, configuration);
 
@@ -99,7 +103,7 @@ public static class DependencyInjection
 
     private static void AddPresistence(IServiceCollection services, IConfiguration configuration)
     {
-        var connectionString = configuration.GetConnectionString("DatabaseConnection") ?? throw new ArgumentNullException(nameof(configuration));
+        var connectionString = configuration.GetConnectionString("DatabaseConnectionOnDocker") ?? throw new ArgumentNullException(nameof(configuration));
 
         services.AddDbContext<RetroGameLogDbContext>(options =>
         {
