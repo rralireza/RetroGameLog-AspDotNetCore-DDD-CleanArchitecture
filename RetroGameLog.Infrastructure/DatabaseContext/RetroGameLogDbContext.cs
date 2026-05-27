@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using RetroGameLog.Application.Exceptions;
 using RetroGameLog.Domain.Abstractions;
+using RetroGameLog.Infrastructure.Outbox;
 
 namespace RetroGameLog.Infrastructure.DatabaseContext;
 
@@ -49,11 +50,16 @@ public sealed class RetroGameLogDbContext : DbContext, IUnitOfWork
                 x.ClearDomainEvents();
 
                 return domainEvents;
-            }).ToList();
+            })
+            .Select(x => new OutboxMessage
+            {
 
-        foreach (var domainEvent in domainEvents)
-        {
-            await _publisher.Publish(domainEvent);
-        }
+            })
+            .ToList();
+
+        //foreach (var domainEvent in domainEvents)
+        //{
+        //    await _publisher.Publish(domainEvent);
+        //}
     }
 }
